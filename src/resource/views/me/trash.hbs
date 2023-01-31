@@ -1,0 +1,94 @@
+<div class="mt-4">
+  <div><h2>Khóa học đã xóa của tôi</h2>
+    <a href="/me/stored/courses">Danh sách khóa học</a>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Tên khóa học</th>
+        <th scope="col">Mô tả</th>
+        <th scope="col">Slug</th>
+        <th scope="col">Thời gian tạo</th>
+        <th scope="col" colspan="3">Thời gian cập nhật</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each courses}}
+        <tr>
+          <th scope="row">{{sum @index 1}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.description}}</td>
+          <td>{{this.slug}}</td>
+          <td>{{this.createdAt}}</td>
+          <td>{{this.updatedAt}}</td>
+          <td><a class="btn btn-primary restore-btn" data-id={{this._id}}>Khôi
+              phục</a></td>
+          <td><a
+              href=""
+              class="btn btn-danger"
+              data-toggle="modal"
+              data-target="#deleteModal"
+              data-id="{{this._id}}"
+            >Xóa vĩnh viễn</a></td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan="5" class="text-center">Thùng rác trống
+            <a href="courses/create">Xóa khóa học</a></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+{{! Delete Hidden Form }}
+<form name="deleteCourseForm" method="post"></form>
+
+{{! Confim Delete }}
+<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa khóa học</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa ?.</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          id="btn-delete"
+          type="submit"
+          class="btn btn-danger"
+        >Xóa</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal"
+        >Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() { var courseId; const
+  form = document.forms['deleteCourseForm']; const deleteBtn
+  =document.getElementById("btn-delete"); const restoreBtnAll =
+  document.querySelectorAll('.restore-btn');
+  $('#deleteModal').on('show.bs.modal', function (e) { var button =
+  $(e.relatedTarget); courseId = button.data('id') }); deleteBtn.onclick =
+  function () { form.action = "/courses/" + courseId + "/force?_method=DELETE";
+  form.submit()}; restoreBtnAll.forEach(btn => btn.onclick = () => { const
+  courseId = btn.getAttribute("data-id"); form.action = "/courses/" + courseId +
+  "/restore?_method=PATCH"; form.submit(); }) })
+
+</script>
